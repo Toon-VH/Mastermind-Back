@@ -17,7 +17,7 @@ namespace Mastermind.API.Controllers
             return Ok();
         }
 
-        [HttpPost]
+        /*[HttpPost]
         public MastermindResponse Post([FromBody]IEnumerable<AttemptColor> attempt)
         {
             MastermindState.Engine ??= new MastermindEngine();
@@ -39,6 +39,6 @@ namespace Mastermind.API.Controllers
                 Rows = MastermindState.Engine.Attempts,
                 Win = MastermindState.Engine.Validate()
             };
-        }
+        }*/
     }
 }

@@ -6,94 +6,76 @@ namespace Mastermind.Core
 {
     public class MastermindEngine
     {
-        public int RowLength { get; set; }
-        public int GameLenght { get; set; }
-        public int ColorsAmount { get; set; }
-        public AttemptColor[] Code { get; set; }
-        public List<Row> Attempts { get; set; }
+        public Combination SecretCombination { get; set; }
+        public List<ValidatedCombination> Attempts { get; set; }
 
-        public MastermindEngine(int rowLength = 4, int lenghtGame = 9, int colorsAmount = 6)
+        public MastermindEngine()
         {
-            RowLength = rowLength;
-            GameLenght = lenghtGame;
-            ColorsAmount = colorsAmount;
-
-            Attempts = new List<Row>();
-
-            Code = Random();
+            Attempts = new List<ValidatedCombination>();
         }
 
-        public bool Validate()
+        public void Start()
         {
-            bool result = true;
+            CreateRandomCombination();
+        }
 
-            for (var i = 0; i < RowLength; i++)
+        public Result Validate(Combination combination)
+        {
+            int correctPositions = 0;
+            int correctColors = 0;
+
+            Attempts.Add(new ValidatedCombination()
             {
-                if (Attempts.Last().AttemptColors[i] != Code[i])
-                {
-                    result = false;
-                }
-            }
+                Colors = combination.Colors,
+            });
 
-            return result;
-        }
-
-        public void CalculateHints()
-        {
             var indexes = new List<int>();
 
-            for (int i = 0; i < RowLength; i++)
+            for (int i = 0; i < 4; i++)
             {
-                if (Code[i] == Attempts.Last().AttemptColors[i])
+                if (SecretCombination.Colors[i] == Attempts.Last().Colors[i])
                 {
                     indexes.Add(i);
-                    Attempts.Last().CorrectPositionColor++;
+                    correctPositions++;
                 }
             }
 
-            for (int i = 0; i < RowLength; i++)
+            for (int i = 0; i < 4; i++)
             {
                 if (indexes.Contains(i)) continue;
-                for (int j = 0; j < RowLength; j++)
+                for (int j = 0; j < 4; j++)
                 {
                     if (indexes.Contains(j)) continue;
 
-                    if (Code[i] == Attempts.Last().AttemptColors[j])
+                    if (SecretCombination.Colors[i] == Attempts.Last().Colors[j])
                     {
-                        Attempts.Last().CorrectColor++;
+                        correctColors++;
                         break;
                     }
                 }
             }
+            Attempts.Last().Result = new Result(correctPositions, correctColors, Attempts.Count >= 9 ? true : false);
+            return Attempts.Last().Result;
         }
 
 
-        public void SaveAttempt(AttemptColor[] colors)
+        private void CreateRandomCombination()
         {
-            Attempts.Add(new Row
+            Combination combination = new Combination();
+            combination.Colors = new AttemptColor[4];
+            for (int i = 0; i < 4; i++)
             {
-                AttemptColors = colors
-            });
-        }
-
-            
-
-        private AttemptColor[] Random()
-        {
-            AttemptColor[] array = new AttemptColor[RowLength];
-            for (int i = 0; i < RowLength; i++)
-            {
-                array[i] = RandomColorPicker();
+                combination.Colors[i] = RandomColorPicker();
             }
 
-            return array;
+            SecretCombination = combination;
         }
 
         private AttemptColor RandomColorPicker()
         {
             var rand = new Random();
-            var rdm = rand.Next(0, ColorsAmount);
-            return (AttemptColor) rdm;
+            var rdm = rand.Next(0, 6);
+            return (AttemptColor)rdm;
         }
     }
 }

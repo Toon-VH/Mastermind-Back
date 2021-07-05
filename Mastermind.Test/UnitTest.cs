@@ -14,55 +14,39 @@ namespace Mastermind.Test
         [Test]
         public void Test1()
         {
-            Core.MastermindEngine mstrm = new Core.MastermindEngine(lenghtGame: 6);
-            Assert.AreEqual(6, mstrm.GameLenght);
-            Assert.AreEqual(4, mstrm.RowLength);
-            Assert.AreEqual(6, mstrm.ColorsAmount);
+            MastermindEngine mstrm = new MastermindEngine();
 
-            mstrm.Code = new[]{AttemptColor.Blue,AttemptColor.Red,AttemptColor.Green,AttemptColor.Green};
-            var colors = new[]{AttemptColor.Green,AttemptColor.Red,AttemptColor.Magenta,AttemptColor.Green};
-            var colors2 = new[]{AttemptColor.Blue,AttemptColor.Red,AttemptColor.Green,AttemptColor.Green};
-            var colors3 = new[]{AttemptColor.Magenta,AttemptColor.Red,AttemptColor.Red,AttemptColor.Green};
-            var colors4 = new[]{AttemptColor.Red,AttemptColor.Blue,AttemptColor.Green,AttemptColor.Magenta};
+            mstrm.SecretCombination = new Combination(new[]
+                {AttemptColor.Blue, AttemptColor.Red, AttemptColor.Green, AttemptColor.Green});
 
-            mstrm.SaveAttempt(colors);
-            Assert.False(mstrm.Validate());
-            mstrm.CalculateHints();
-            Assert.AreEqual(2,mstrm.Attempts.Last().CorrectPositionColor);
-            Assert.AreEqual(1,mstrm.Attempts.Last().CorrectColor);
+            var colors1 = new Combination(new[]
+                {AttemptColor.Green, AttemptColor.Red, AttemptColor.Magenta, AttemptColor.Green});
             
-            mstrm.SaveAttempt(colors2);
-            Assert.True(mstrm.Validate());
-            mstrm.CalculateHints();
-            Assert.AreEqual(4,mstrm.Attempts.Last().CorrectPositionColor);
-            Assert.AreEqual(0,mstrm.Attempts.Last().CorrectColor);
+            var colors2 = new Combination(new[]
+                {AttemptColor.Green, AttemptColor.Blue, AttemptColor.Blue, AttemptColor.Blue});
             
-            mstrm.SaveAttempt(colors3);
-            Assert.False(mstrm.Validate());
-            mstrm.CalculateHints();
-            Assert.AreEqual(2,mstrm.Attempts.Last().CorrectPositionColor);
-            Assert.AreEqual(0,mstrm.Attempts.Last().CorrectColor);
-            
-            mstrm.SaveAttempt(colors4);
-            Assert.False(mstrm.Validate());
-            mstrm.CalculateHints();
-            Assert.AreEqual(1,mstrm.Attempts.Last().CorrectPositionColor);
-            Assert.AreEqual(2,mstrm.Attempts.Last().CorrectColor);
-            
-            mstrm.Code = new[]{AttemptColor.Red,AttemptColor.Green,AttemptColor.Blue,AttemptColor.Yellow};
-            var colors5 = new[]{AttemptColor.Green,AttemptColor.Blue,AttemptColor.Green,AttemptColor.Green};
-            
-            mstrm.SaveAttempt(colors5);
-            Assert.False(mstrm.Validate());
-            mstrm.CalculateHints();
-            Assert.AreEqual(0,mstrm.Attempts.Last().CorrectPositionColor);
-            Assert.AreEqual(2,mstrm.Attempts.Last().CorrectColor);
-        }
+            var colors3 = new Combination(new[]
+                {AttemptColor.Blue, AttemptColor.Red, AttemptColor.Red, AttemptColor.Red});
 
-        public void Test2()
-        {
+            var colors4 = new Combination(new[]
+                            {AttemptColor.Blue, AttemptColor.Red, AttemptColor.Green, AttemptColor.Green});
+            
+
+            Assert.True(mstrm.Validate(colors1).CorrectPosition == 2);
+            Assert.True(mstrm.Validate(colors1).CorrectColor == 1);
+            
+            Assert.True(mstrm.Validate(colors2).CorrectPosition == 0);
+            Assert.True(mstrm.Validate(colors2).CorrectColor == 3);
+            
+            Assert.True(mstrm.Validate(colors3).CorrectPosition == 2);
+            Assert.True(mstrm.Validate(colors3).CorrectColor == 0);
+            
+            Assert.True(mstrm.Validate(colors4).GameWon);
+            Assert.False(mstrm.Validate(colors4).GameLost);
+            
+            
+            
             
         }
-        
     }
 }
