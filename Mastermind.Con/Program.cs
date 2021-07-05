@@ -51,9 +51,11 @@ namespace Mastermind.Con
 
                 Ending(result, mastermind.SecretCombination);
                 Console.ForegroundColor = ConsoleColor.Magenta;
+                
                 Console.Write("Do you want to play again? (y/n): ");
-                Regex regex2 = new Regex("^[yn]{1}$", RegexOptions.IgnoreCase);
-                string answer = Console.ReadLine();
+                
+                Regex regex2 = new Regex("^[YN]{1}$", RegexOptions.IgnoreCase);
+                string answer = Console.ReadLine().ToUpper();
                 while (!regex2.IsMatch(answer))
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
