@@ -15,9 +15,12 @@ namespace Mastermind.Con
             {
                 Console.Clear();
                 Title();
+
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 var mastermind = new MastermindEngine();
                 mastermind.Start();
+                mastermind.SecretCombination.Colors.ToList().ForEach(color => Console.Write(color + " "));
+                Console.WriteLine(); // Only for debug
                 Print(mastermind);
                 var attempt = "";
                 Result result;
@@ -51,9 +54,9 @@ namespace Mastermind.Con
 
                 Ending(result, mastermind.SecretCombination);
                 Console.ForegroundColor = ConsoleColor.Magenta;
-                
+
                 Console.Write("Do you want to play again? (y/n): ");
-                
+
                 Regex regex2 = new Regex("^[YN]{1}$", RegexOptions.IgnoreCase);
                 string answer = Console.ReadLine().ToUpper();
                 while (!regex2.IsMatch(answer))
@@ -64,7 +67,7 @@ namespace Mastermind.Con
                     answer = Console.ReadLine();
                 }
 
-                playing = answer == "y" ? true : false;
+                playing = answer == "Y" ? true : false;
             }
         }
 
@@ -184,15 +187,15 @@ namespace Mastermind.Con
 
         private static void Ending(Result result, Combination combination)
         {
-            if (result.GameLost)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(AsciiStrings.Lost);
-            }
-            else
+            if (result.GameWon)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine(AsciiStrings.Win);
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(AsciiStrings.Lost);
             }
 
             Console.Write("The code was: ");
