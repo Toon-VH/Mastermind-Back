@@ -19,8 +19,8 @@ namespace Mastermind.Con
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 var mastermind = new MastermindEngine();
                 mastermind.Start();
-                mastermind.SecretCombination.Colors.ToList().ForEach(color => Console.Write(color + " "));
-                Console.WriteLine(); // Only for debug
+                // mastermind.SecretCombination.Colors.ToList().ForEach(color => Console.Write(color + " "));// Only for debug
+                // Console.WriteLine(); // Only for debug
                 Print(mastermind);
                 var attempt = "";
                 Result result;
