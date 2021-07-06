@@ -15,10 +15,22 @@ namespace Mastermind.Con
             {
                 Console.Clear();
                 Title();
-
+                Regex regex = new Regex("[1-99]{1}", RegexOptions.IgnoreCase);
+                Console.Write("Please enter the difficulty (1-99) (default 12): ");
+                string difficulty = Console.ReadLine();
+                if (!difficulty.Equals(""))
+                {
+                    while (!regex.IsMatch(difficulty))
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.Write("Please enter a valid input:");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        difficulty = Console.ReadLine();
+                    }
+                }
+                else difficulty = "12";
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                var mastermind = new MastermindEngine();
-                mastermind.Start();
+                var mastermind = new MastermindEngine(int.Parse(difficulty));
                 // mastermind.SecretCombination.Colors.ToList().ForEach(color => Console.Write(color + " "));// Only for debug
                 // Console.WriteLine(); // Only for debug
                 Print(mastermind);
@@ -35,7 +47,7 @@ namespace Mastermind.Con
 
                     Console.WriteLine();
 
-                    Regex regex = new Regex("^[RGBMYC]{4}$", RegexOptions.IgnoreCase);
+                    regex = new Regex("^[RGBMYC]{4}$", RegexOptions.IgnoreCase);
                     Console.Write("Code: ");
                     attempt = Console.ReadLine();
                     while (!regex.IsMatch(attempt))
@@ -48,18 +60,17 @@ namespace Mastermind.Con
 
                     result = mastermind.Validate(CodeToCombination(attempt));
                     Console.Clear();
-                    Title();
                     Print(mastermind);
                 } while (!result.GameLost && !result.GameWon);
 
                 Ending(result, mastermind.SecretCombination);
-                Console.ForegroundColor = ConsoleColor.Magenta;
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
 
                 Console.Write("Do you want to play again? (y/n): ");
 
-                Regex regex2 = new Regex("^[YN]{1}$", RegexOptions.IgnoreCase);
+                regex = new Regex("^[YN]{1}$", RegexOptions.IgnoreCase);
                 string answer = Console.ReadLine().ToUpper();
-                while (!regex2.IsMatch(answer))
+                while (!regex.IsMatch(answer))
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.Write("Please enter a valid input:");
@@ -118,6 +129,7 @@ namespace Mastermind.Con
 
         private static void Print(MastermindEngine core)
         {
+            Title();
             var counter = 1;
             core.Attempts.ForEach(a =>
             {
@@ -135,7 +147,7 @@ namespace Mastermind.Con
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine();
             });
-            var emptyLines = 9 - core.Attempts.Count;
+            var emptyLines = core.Difficulty - core.Attempts.Count;
             for (var i = 0; i < emptyLines; i++)
             {
                 Console.ForegroundColor = ConsoleColor.DarkGreen;
@@ -198,10 +210,16 @@ namespace Mastermind.Con
                 Console.WriteLine(AsciiStrings.Lost);
             }
 
-            Console.Write("The code was: ");
-            combination.Colors.ToList().ForEach(color => Console.Write(color + " "));
-            Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("The code was: ");
+            combination.Colors.ToList().ForEach(color =>
+            {
+                Console.ForegroundColor = GetConsoleColor(color);
+                Console.Write(color + " ");
+            });
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine();
+            Console.WriteLine();
         }
 
         private static void Title()
