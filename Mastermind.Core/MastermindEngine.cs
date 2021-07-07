@@ -6,7 +6,6 @@ namespace Mastermind.Core
 {
     public class MastermindEngine
     {
-
         public int Difficulty { get; set; }
         public Combination SecretCombination { get; set; }
         public List<ValidatedCombination> Attempts { get; set; }
@@ -17,7 +16,7 @@ namespace Mastermind.Core
             Attempts = new List<ValidatedCombination>();
             CreateRandomCombination();
         }
-        
+
 
         public Result Validate(Combination combination)
         {
@@ -28,12 +27,10 @@ namespace Mastermind.Core
             {
                 Colors = combination.Colors,
             });
-            
-            
+
             var indexesPosition = new List<int>();
-            
-            var indexesColors = new List<int>();
-            
+            var correctC = new List<AttemptColor>();
+
             for (int i = 0; i < 4; i++)
             {
                 if (SecretCombination.Colors[i] == Attempts.Last().Colors[i])
@@ -42,26 +39,32 @@ namespace Mastermind.Core
                     correctPositions++;
                 }
             }
-
+            
             for (int i = 0; i < 4; i++)
             {
                 if (indexesPosition.Contains(i)) continue;
+
                 for (int j = 0; j < 4; j++)
                 {
+                    var attempColor = Attempts.Last().Colors[j];
+                    var secretColor = SecretCombination.Colors[i];
+                    
                     if (indexesPosition.Contains(j)) continue;
+                    if (i == j) continue;
                     
-                    if (indexesColors.Contains(j)) continue;
-                    
-                    if (SecretCombination.Colors[i] == Attempts.Last().Colors[j])
+                    if (correctC.Contains(secretColor)) continue;
+
+                        if (secretColor == attempColor)
                     {
-                        indexesColors.Add(i);
+                        correctC.Add(secretColor);
                         correctColors++;
                         break;
                     }
                 }
             }
 
-            Attempts.Last().Result = new Result(correctPositions, correctColors, Attempts.Count >= Difficulty ? true : false);
+            Attempts.Last().Result =
+                new Result(correctPositions, correctColors, Attempts.Count >= Difficulty ? true : false);
             return Attempts.Last().Result;
         }
 
