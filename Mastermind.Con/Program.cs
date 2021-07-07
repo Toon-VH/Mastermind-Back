@@ -129,12 +129,15 @@ namespace Mastermind.Con
 
         private static void Print(MastermindEngine core)
         {
-            Title();
             var counter = 1;
+            Title();
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("Attempts\tCode\t\tCorrect Position / Correct Color");
+            Console.WriteLine("================================================================");
             core.Attempts.ForEach(a =>
             {
                 Console.ForegroundColor = ConsoleColor.DarkRed;
-                Console.Write($"{counter++}\t");
+                Console.Write($"{counter++}\t\t");
                 a.Colors.ToList().ForEach(ac =>
                 {
                     Console.ForegroundColor = GetConsoleColor(ac);
@@ -143,7 +146,7 @@ namespace Mastermind.Con
                 });
 
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write($"\tHint {a.Result.CorrectPosition}/{a.Result.CorrectColor}");
+                Console.Write($"\t\tHint: {a.Result.CorrectPosition}/{a.Result.CorrectColor}");
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine();
             });
@@ -151,7 +154,7 @@ namespace Mastermind.Con
             for (var i = 0; i < emptyLines; i++)
             {
                 Console.ForegroundColor = ConsoleColor.DarkGreen;
-                Console.Write($"{counter++}\t");
+                Console.Write($"{counter++}\t\t");
                 Console.ForegroundColor = ConsoleColor.DarkMagenta;
 
                 for (var j = 0; j < 4; j++)
